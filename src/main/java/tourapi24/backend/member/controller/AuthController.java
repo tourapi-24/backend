@@ -24,7 +24,7 @@ public class AuthController {
     ) {
         try {
             OAuthService oAuthService = oAuthServiceFactory.getOAuthService(provider);
-            return new ResponseEntity<>(oAuthService.auth(request.getAccessToken()), HttpStatus.OK);
+            return new ResponseEntity<>(oAuthService.auth(request.getAccessToken()), HttpStatus.CREATED);
         } catch (Exception e) {
             System.out.println(e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
