@@ -6,6 +6,7 @@ import org.springframework.web.client.RestTemplate;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.domain.Provider;
 import tourapi24.backend.member.dto.auth.OAuthResponse;
+import tourapi24.backend.member.dto.auth.Token;
 import tourapi24.backend.member.repository.MemberRepository;
 
 @RequiredArgsConstructor
@@ -66,7 +67,10 @@ public abstract class AbstractOAuthService implements OAuthService {
         return memberRepository.save(member);
     }
 
-    protected String generateToken(Member member) {
-        return "TOKEN_" + member.getId();
+    protected Token generateToken(Member member) {
+        return Token.builder()
+                .id(member.getId())
+                .username(member.getUsername())
+                .build();
     }
 }

@@ -5,8 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class OAuthResponse {
-    private String type;
-    private String message;
-    private Token token;
+public class Token {
+    private Long id;
+    private String username;
 }
