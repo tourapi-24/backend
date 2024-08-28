@@ -14,3 +14,10 @@ spring:
 
 jwt:
   expiration: 3600000
+
+springdoc:
+  api-docs:
+    path: /docs/api
+  swagger-ui:
+    path: /docs/swagger-ui.html
+    operationsSorter: method
