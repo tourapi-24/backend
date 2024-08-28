@@ -8,5 +8,6 @@ import lombok.Getter;
 public class OAuthResponse {
     private String type;
     private String message;
-    private Token token;
+    //    @JsonIgnore
+    private String token;
 }

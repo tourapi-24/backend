@@ -39,3 +39,6 @@ out/
 ### H2 Database ###
 h2.mv.db
 h2.mv.db.bak
+
+### Key Files ###
+*.pem

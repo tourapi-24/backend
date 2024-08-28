@@ -8,8 +8,8 @@ import tourapi24.backend.member.repository.MemberRepository;
 @Service
 public class NaverAuthService extends AbstractOAuthService {
 
-    public NaverAuthService(RestTemplate restTemplate, MemberRepository memberRepository) {
-        super(restTemplate, memberRepository);
+    public NaverAuthService(RestTemplate restTemplate, MemberRepository memberRepository, JwtService jwtService) {
+        super(restTemplate, memberRepository, jwtService);
     }
 
     @Override

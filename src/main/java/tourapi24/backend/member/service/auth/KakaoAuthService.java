@@ -19,8 +19,8 @@ import java.util.Objects;
 @Service
 public class KakaoAuthService extends AbstractOAuthService {
 
-    public KakaoAuthService(RestTemplate restTemplate, MemberRepository memberRepository) {
-        super(restTemplate, memberRepository);
+    public KakaoAuthService(RestTemplate restTemplate, MemberRepository memberRepository, JwtService jwtService) {
+        super(restTemplate, memberRepository, jwtService);
     }
 
     @Override

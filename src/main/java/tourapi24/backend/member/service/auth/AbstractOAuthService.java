@@ -6,7 +6,6 @@ import org.springframework.web.client.RestTemplate;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.domain.Provider;
 import tourapi24.backend.member.dto.auth.OAuthResponse;
-import tourapi24.backend.member.dto.auth.Token;
 import tourapi24.backend.member.repository.MemberRepository;
 
 @RequiredArgsConstructor
@@ -15,6 +14,7 @@ public abstract class AbstractOAuthService implements OAuthService {
 
     protected final RestTemplate restTemplate;
     protected final MemberRepository memberRepository;
+    protected final JwtService jwtService;
 
     @Override
     @Transactional
@@ -37,19 +37,21 @@ public abstract class AbstractOAuthService implements OAuthService {
 
     private OAuthResponse handleExistingMember(UserInfo userInfo) {
         Member member = memberRepository.findOneBySocialId(userInfo.getSocialId()).orElseThrow();
+        String jwt = generateToken(member);
         return OAuthResponse.builder()
                 .type("SIGN_IN")
                 .message("success")
-                .token(generateToken(member))
+                .token(jwt)
                 .build();
     }
 
     private OAuthResponse handleNewMember(UserInfo userInfo) {
         Member member = signUp(userInfo);
+        String jwt = generateToken(member);
         return OAuthResponse.builder()
                 .type("SIGN_UP")
                 .message("success")
-                .token(generateToken(member))
+                .token(jwt)
                 .build();
     }
 
@@ -67,10 +69,7 @@ public abstract class AbstractOAuthService implements OAuthService {
         return memberRepository.save(member);
     }
 
-    protected Token generateToken(Member member) {
-        return Token.builder()
-                .id(member.getId())
-                .username(member.getUsername())
-                .build();
+    protected String generateToken(Member member) {
+        return jwtService.generateToken(member.getId(), member.getUsername());
     }
 }
