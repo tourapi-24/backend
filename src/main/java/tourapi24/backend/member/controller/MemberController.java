@@ -20,21 +20,6 @@ public class MemberController {
 
     private final MemberService memberService;
 
-
-    @PostMapping("/username")
-    public ResponseEntity<?> updateUsername(
-            @Valid @RequestBody UsernameUpdateRequest request,
-            @CurrentUser CurrentUserInfo userInfo
-    ) {
-        int result = memberService.updateUsername(userInfo.getUserId(), request.getContent());
-
-        if (result == 0) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(HttpStatus.CREATED);
-
-    }
-
     @PostMapping("/bio")
     public ResponseEntity<?> updateBio(
             @Valid @RequestBody UsernameUpdateRequest request,
