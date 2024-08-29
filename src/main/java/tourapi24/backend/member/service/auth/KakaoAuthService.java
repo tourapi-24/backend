@@ -3,6 +3,8 @@ package tourapi24.backend.member.service.auth;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -40,8 +42,10 @@ public class KakaoAuthService extends AbstractOAuthService {
 
     @Getter
     @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
-    private static class KakaoUserInfo {
+    public static class KakaoUserInfo {
         @JsonProperty("id")
         private Long id;
 
@@ -49,7 +53,7 @@ public class KakaoAuthService extends AbstractOAuthService {
         private KakaoAccount kakaoAccount;
 
         @JsonIgnore
-        protected UserInfo toUserInfo() {
+        public UserInfo toUserInfo() {
             return UserInfo.builder()
                     .socialId(String.valueOf(id))
                     .email(kakaoAccount.email)
@@ -60,6 +64,8 @@ public class KakaoAuthService extends AbstractOAuthService {
 
         @Getter
         @NoArgsConstructor
+        @Builder
+        @AllArgsConstructor
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class KakaoAccount {
             @JsonProperty("profile")
@@ -70,6 +76,8 @@ public class KakaoAuthService extends AbstractOAuthService {
 
             @Getter
             @NoArgsConstructor
+            @Builder
+            @AllArgsConstructor
             @JsonIgnoreProperties(ignoreUnknown = true)
             public static class Profile {
                 @JsonProperty("nickname")
