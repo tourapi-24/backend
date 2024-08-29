@@ -62,9 +62,9 @@ public abstract class AbstractOAuthService implements OAuthService {
                 .username(userInfo.getUsername())
                 .provider(getProvider())
                 .gender(userInfo.getGender())
+                .ageRange(userInfo.getAgeRange())
                 .profileImage(userInfo.getProfileImage())
                 .birthday(userInfo.getBirthday())
-                .ageRange(userInfo.getAgeRange())
                 .build();
         return memberRepository.save(member);
     }

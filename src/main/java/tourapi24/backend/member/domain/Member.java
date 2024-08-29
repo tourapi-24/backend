@@ -29,9 +29,10 @@ public class Member {
 
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
+    @Enumerated(value = EnumType.STRING)
+    private AgeRange ageRange;
 
     private String profileImage;
-    private String bio;
-    private Integer ageRange; // 10, 20, ... , 60
     private String birthday; // "0101" ~ "1231"
+    private String bio;
 }

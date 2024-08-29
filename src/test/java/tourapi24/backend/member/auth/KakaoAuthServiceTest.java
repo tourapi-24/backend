@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.domain.Provider;
 import tourapi24.backend.member.dto.auth.OAuthResponse;
@@ -36,7 +37,6 @@ public class KakaoAuthServiceTest {
 
     // Mock Data
     private KakaoAuthService.KakaoUserInfo mockKakaoUserInfo;
-    private UserInfo mockUserInfo;
     private Member mockMember;
     private String mockAccessToken;
 
@@ -54,7 +54,7 @@ public class KakaoAuthServiceTest {
                                 .build())
                         .build())
                 .build();
-        mockUserInfo = mockKakaoUserInfo.toUserInfo();
+        UserInfo mockUserInfo = mockKakaoUserInfo.toUserInfo();
         mockMember = Member.builder()
                 .id(1L)
                 .socialId(mockUserInfo.getSocialId())
@@ -62,9 +62,9 @@ public class KakaoAuthServiceTest {
                 .username(mockUserInfo.getUsername())
                 .provider(Provider.KAKAO)
                 .gender(mockUserInfo.getGender())
+                .ageRange(AgeRange.TWENTY)
                 .profileImage(mockUserInfo.getProfileImage())
                 .birthday(mockUserInfo.getBirthday())
-                .ageRange(mockUserInfo.getAgeRange())
                 .build();
         mockAccessToken = "mock_access_token";
     }

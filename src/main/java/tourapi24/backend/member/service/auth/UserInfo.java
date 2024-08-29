@@ -3,6 +3,7 @@ package tourapi24.backend.member.service.auth;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Gender;
 
 @Getter
@@ -13,7 +14,7 @@ public class UserInfo {
     private String email;
     private String username;
     private Gender gender;
+    private AgeRange ageRange;
     private String profileImage;
     private String birthday;
-    private Integer ageRange;
 }
