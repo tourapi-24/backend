@@ -1,5 +1,10 @@
 package tourapi24.backend.member.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,14 +23,23 @@ import tourapi24.backend.member.service.MemberService;
 @RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor
+@Tag(name = "Member")
 public class MemberController {
 
     private final MemberService memberService;
 
     @PostMapping("/bio")
+    @Operation(
+            summary = "Member의 bio를 변경합니다",
+            responses = {
+                    @ApiResponse(responseCode = "201", content = @Content),
+                    @ApiResponse(responseCode = "400", content = @Content),
+                    @ApiResponse(responseCode = "401", content = @Content)
+            }
+    )
     public ResponseEntity<?> updateBio(
             @Valid @RequestBody BioUpdateRequest request,
-            @CurrentUser CurrentUserInfo userInfo
+            @Parameter(hidden = true) @CurrentUser CurrentUserInfo userInfo
     ) {
         int result;
 
