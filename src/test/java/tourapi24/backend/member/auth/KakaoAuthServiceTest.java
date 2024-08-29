@@ -12,6 +12,7 @@ import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.domain.Provider;
 import tourapi24.backend.member.dto.auth.OAuthResponse;
+import tourapi24.backend.member.dto.external.KakaoUserInfo;
 import tourapi24.backend.member.repository.MemberRepository;
 import tourapi24.backend.member.service.auth.JwtService;
 import tourapi24.backend.member.service.auth.KakaoAuthService;
@@ -36,17 +37,17 @@ public class KakaoAuthServiceTest {
     private KakaoAuthService kakaoAuthService;
 
     // Mock Data
-    private KakaoAuthService.KakaoUserInfo mockKakaoUserInfo;
+    private KakaoUserInfo mockKakaoUserInfo;
     private Member mockMember;
     private String mockAccessToken;
 
     @BeforeEach
     void setUp() {
-        mockKakaoUserInfo = KakaoAuthService.KakaoUserInfo.builder()
+        mockKakaoUserInfo = KakaoUserInfo.builder()
                 .id(3679105054L)
-                .kakaoAccount(KakaoAuthService.KakaoUserInfo.KakaoAccount.builder()
+                .kakaoAccount(KakaoUserInfo.KakaoAccount.builder()
                         .email("ilcm96@gmail.com")
-                        .profile(KakaoAuthService.KakaoUserInfo.KakaoAccount.Profile.builder()
+                        .profile(KakaoUserInfo.KakaoAccount.Profile.builder()
                                 .nickname("윤성민")
                                 .profileImageUrl("http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg")
                                 .isDefaultImage(true)
@@ -72,7 +73,7 @@ public class KakaoAuthServiceTest {
     @Test
     void 회원가입() {
         //given
-        when(restTemplate.exchange(anyString(), any(), any(), eq(KakaoAuthService.KakaoUserInfo.class)))
+        when(restTemplate.exchange(anyString(), any(), any(), eq(KakaoUserInfo.class)))
                 .thenReturn(ResponseEntity.ok(mockKakaoUserInfo));
         when(memberRepository.findOneBySocialId(anyString())).
                 thenReturn(Optional.empty());
@@ -96,7 +97,7 @@ public class KakaoAuthServiceTest {
     @Test
     void 로그인() {
         // given
-        when(restTemplate.exchange(anyString(), any(), any(), eq(KakaoAuthService.KakaoUserInfo.class)))
+        when(restTemplate.exchange(anyString(), any(), any(), eq(KakaoUserInfo.class)))
                 .thenReturn(ResponseEntity.ok(mockKakaoUserInfo));
         when(memberRepository.findOneBySocialId(anyString()))
                 .thenReturn(Optional.of(mockMember));
