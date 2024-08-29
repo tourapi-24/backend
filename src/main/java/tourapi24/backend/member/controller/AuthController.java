@@ -29,7 +29,7 @@ public class AuthController {
             return new ResponseEntity<>(oAuthService.auth(request.getAccessToken()), HttpStatus.CREATED);
         } catch (Exception e) {
             log.error("{} {}", e.getClass(), e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 }
