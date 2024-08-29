@@ -1,5 +1,11 @@
 package tourapi24.backend.member.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,11 +21,26 @@ import tourapi24.backend.member.service.auth.OAuthServiceFactory;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication")
 public class AuthController {
 
     private final OAuthServiceFactory oAuthServiceFactory;
 
     @PostMapping("/oauth")
+    @Operation(
+            summary = "OAuth의 access token을 이용해 사용자를 인증하고 JWT 토큰을 발급합니다",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = OAuthResponse.class)
+                            )
+                    ),
+                    @ApiResponse(responseCode = "401", content = @Content)
+            }
+    )
+    @Parameter(name = "provider", required = true, schema = @Schema(allowableValues = {"kakao", "naver"}))
     public ResponseEntity<OAuthResponse> auth(
             @RequestParam String provider,
             @Valid @RequestBody OAuthRequest request
