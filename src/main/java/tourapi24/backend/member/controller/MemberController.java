@@ -22,7 +22,7 @@ public class MemberController {
 
     @PostMapping("/bio")
     public ResponseEntity<?> updateBio(
-            @Valid @RequestBody UsernameUpdateRequest request,
+            @Valid @RequestBody BioUpdateRequest request,
             @CurrentUser CurrentUserInfo userInfo
     ) {
         int result = memberService.updateBio(userInfo.getUserId(), request.getContent());
