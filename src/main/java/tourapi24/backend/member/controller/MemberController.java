@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tourapi24.backend.annotation.CurrentUser;
 import tourapi24.backend.annotation.CurrentUserInfo;
-import tourapi24.backend.member.dto.mypage.UsernameUpdateRequest;
+import tourapi24.backend.member.dto.mypage.BioUpdateRequest;
 import tourapi24.backend.member.service.MemberService;
 
 @RestController
