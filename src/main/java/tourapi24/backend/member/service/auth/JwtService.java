@@ -5,10 +5,10 @@ import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import tourapi24.backend.member.domain.AgeRange;
-import tourapi24.backend.member.domain.Gender;
+import tourapi24.backend.member.domain.Member;
 
 import java.security.KeyPair;
+import java.time.Clock;
 import java.util.Date;
 
 @Service
@@ -16,41 +16,46 @@ import java.util.Date;
 public class JwtService {
 
     private final KeyPair keyPair;
+    private final Clock clock;
 
     @Value("${jwt.expiration}")
     private long expiration;
 
-    public static Claims getClaimFromToken(String token) {
-        return Jwts.parser()
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
+    @Value("${jwt.temporary-expiration}")
+    private long temporaryExpiration;
 
-    public String generateToken(Long userId, String username) {
-        Date now = new Date();
+//    public static Claims getClaimFromToken(String token) {
+//        return Jwts.parser()
+//                .build()
+//                .parseSignedClaims(token)
+//                .getPayload();
+//    }
+
+    public String generateToken(Member member) {
+        Date now = Date.from(clock.instant());
         Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
-                .subject(Long.toString(userId))
-                .claim("username", username)
+                .subject(Long.toString(member.getId())) // <-> 임시 JWT의 sub는 socialId
+                .claim("username", member.getUsername())
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(keyPair.getPrivate(), Jwts.SIG.RS256)
                 .compact();
     }
 
-    public String generateTempToken(String userId, String username, String birthday, AgeRange ageRange, Gender gender) {
+    public String generateTempToken(UserInfo userInfo) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + 300000); // 5 minutes
+        Date expiryDate = new Date(now.getTime() + temporaryExpiration);
 
         return Jwts.builder()
-                .subject(userId)
+                .subject(userInfo.getSocialId()) // <-> 정식 JWT의 sub는 id
                 .claim("temp", true)
-                .claim("username", username)
-                .claim("birthday", birthday)
-                .claim("ageRange", ageRange)
-                .claim("gender", gender)
+                .claim("prvider", userInfo.getProvider())
+                .claim("username", userInfo.getUsername())
+                .claim("birthday", userInfo.getBirthday())
+                .claim("ageRange", userInfo.getAgeRange())
+                .claim("gender", userInfo.getGender())
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(keyPair.getPrivate(), Jwts.SIG.RS256)
@@ -59,6 +64,7 @@ public class JwtService {
 
     public Claims validateToken(String token) {
         return Jwts.parser()
+                .clock(() -> Date.from(clock.instant()))
                 .verifyWith(keyPair.getPublic())
                 .build()
                 .parseSignedClaims(token)
