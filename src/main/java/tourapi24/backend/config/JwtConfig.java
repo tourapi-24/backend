@@ -12,6 +12,7 @@ import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.time.Clock;
 import java.util.Base64;
 
 @Configuration
@@ -22,6 +23,11 @@ public class JwtConfig {
 
     @Value("classpath:public_key.pem") // main/resources/public_key.pem
     private Resource publicKeyResource;
+
+    @Bean
+    public Clock clock() {
+        return Clock.systemDefaultZone();
+    }
 
     @Bean
     public KeyPair keyPair() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import tourapi24.backend.member.domain.Provider;
 import tourapi24.backend.member.service.auth.UserInfo;
 
 @Getter
@@ -14,7 +15,7 @@ import tourapi24.backend.member.service.auth.UserInfo;
 @Builder
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class KakaoUserInfo {
+public class KakaoUserInfoResponse implements UserInfoResponse {
     @JsonProperty("id")
     private Long id;
 
@@ -27,6 +28,7 @@ public class KakaoUserInfo {
                 .socialId(String.valueOf(id))
                 .email(kakaoAccount.email)
                 .username(kakaoAccount.profile.nickname)
+                .provider(Provider.KAKAO)
                 .profileImage(kakaoAccount.profile.isDefaultImage() ? null : kakaoAccount.profile.profileImageUrl)
                 .build();
     }
