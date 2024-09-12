@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import tourapi24.backend.member.domain.AgeRange;
+import tourapi24.backend.member.domain.Gender;
 import tourapi24.backend.recommend.dto.TouristSpot;
 
 import java.net.URI;
@@ -15,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 public class RecommendService {
 
-    @Value("${tour-api}")
+    @Value("${api.tour}")
     private String tourApi;
     private static double curX;
     private static double curY;
@@ -23,6 +25,63 @@ public class RecommendService {
 
     private static double calculateDistance(double x1, double y1, double x2, double y2) {
         return Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2);
+    }
+
+    public List<TouristSpot> recommendByAgeGenderLoc(AgeRange age, Gender gender, Double lat, Double lot) {
+        try {
+            String url = getUrlAgeGenderLoc(age, gender);
+
+            String response = fetchApiResponse(url);
+            List<Map<String, Object>> spots = parseApiResponse(response);
+            return findNearestSpots(spots);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    private String getUrlAgeGenderLoc(AgeRange age, Gender gender) {
+        String baseUrl = "https://apis.data.go.kr/B551011/KorService1/areaBasedList1?numOfRows=12&pageNo=1&MobileOS=ETC&MobileApp=AppTest&ServiceKey="
+                + tourApi + "&listYN=Y&arrange=A&contentTypeId=&areaCode=6&_type=json&sigunguCode=";
+
+        // 연령대에 따른 카테고리 선택
+        String cat1 = "";
+        String cat2 = "";
+        String cat3 = "";
+
+        switch(age) {
+            case TEEN:
+                cat1 = "A02"; // 레포츠, 체험 관광지
+                cat2 = "A0201"; // 역사 관광지
+                break;
+            case TWENTY:
+                cat1 = "A02"; // 체험 관광지
+                cat2 = "A0202";  // 축제/공연/행사
+                break;
+            case THIRTY:
+                cat1 = "A01";    // 자연 관광지
+                cat2 = "A0203"; // 체험 관광지
+                break;
+            case FORTY:
+                cat1 = "A01";    // 자연 관광지
+                cat2 = "A0202"; // 휴양 관광지
+                cat3 = "A0201"; // 역사 관광지
+                break;
+            case FIFTY:
+                cat1 = "A01";    // 자연 관광지
+                // 쇼핑 관련 카테고리 필요시 추가
+                break;
+        }
+
+        // URL에 카테고리 값 추가
+        StringBuilder urlBuilder = new StringBuilder(baseUrl);
+        if (!cat1.isEmpty()) urlBuilder.append("&cat1=").append(cat1);
+        if (!cat2.isEmpty()) urlBuilder.append("&cat2=").append(cat2);
+        if (!cat3.isEmpty()) urlBuilder.append("&cat3=").append(cat3);
+
+        String finalUrl = urlBuilder.toString();
+
+        return finalUrl;
     }
 
     public List<TouristSpot> recommendByLocation(Double lat, Double lot) {

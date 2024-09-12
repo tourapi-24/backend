@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Gender;
 import tourapi24.backend.recommend.dto.TouristSpot;
 import tourapi24.backend.recommend.service.RecommendService;
@@ -24,7 +25,7 @@ public class RecommendController {
 
     @GetMapping("/recommend")
     public List<TouristSpot> recommendTouristSpots(
-            @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) AgeRange age,
             @RequestParam(required = false) Gender gender,
             @RequestParam Double lat,
             @RequestParam Double lot,
@@ -36,10 +37,10 @@ public class RecommendController {
         if (age != null && gender != null) { // 나이와 성별이 반영된 경우
 
             if (isInBusan) {
-                recommendedSpots = recommendService.recommendByLocation(lat, lot);
+                recommendedSpots = recommendService.recommendByAgeGenderLoc(age, gender, lat, lot);
             }
              else {
-                recommendedSpots = recommendService.recommendByLocation(lat, lot);
+                recommendedSpots = recommendService.recommendByAgeGenderLoc(age, gender, lat, lot);
             }
 
         } else {    // 나이와 성별이 반영되지 않은 경우
