@@ -23,5 +23,9 @@ springdoc:
     path: /docs/swagger-ui.html
     operationsSorter: method
 
-tourApi: D6W8nGJU7JFd%2FcCsN94xK9U7ifXSnMCQ%2B7AHAVNjzIMhUdXeVkA2Cg0enSw2V9hxvnRuuwP7N42X%2BdD%2BfM0bFA%3D%3D
+#tourApi: D6W8nGJU7JFd%2FcCsN94xK9U7ifXSnMCQ%2B7AHAVNjzIMhUdXeVkA2Cg0enSw2V9hxvnRuuwP7N42X%2BdD%2BfM0bFA%3D%3D
 
+api:
+  tour: tour:D6W8nGJU7JFd%2FcCsN94xK9U7ifXSnMCQ%2B7AHAVNjzIMhUdXeVkA2Cg0enSw2V9hxvnRuuwP7N42X%2BdD%2BfM0bFA%3D%3D
+#  google: AIzaSyCfjBEtpw62cHRX1D2tJN1zyBee5WKZQ9A
+  google: https://maps.googleapis.com/maps/api/directions/json?mode=transit&key=AIzaSyCfjBEtpw62cHRX1D2tJN1zyBee5WKZQ9A&language=ko
