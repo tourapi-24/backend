@@ -2,12 +2,15 @@ package tourapi24.backend.recommend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Gender;
 import tourapi24.backend.recommend.dto.TouristSpot;
+import tourapi24.backend.recommend.repository.TouristSpotRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -22,6 +25,12 @@ public class RecommendService {
     private static double curX;
     private static double curY;
     private static final int RECOMMENDATIONS_COUNT = 5;
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    @Autowired
+    private TouristSpotRepository touristSpotRepository;
 
     private static double calculateDistance(double x1, double y1, double x2, double y2) {
         return Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2);
@@ -157,6 +166,46 @@ public class RecommendService {
                 Double.parseDouble((String) spot.get("mapx")),
                 Double.parseDouble((String) spot.get("mapy"))
         );
-        return new TouristSpot(distance, (String) spot.get("title"), Double.parseDouble((String) spot.get("mapy")), Double.parseDouble((String) spot.get("mapx")));
+        return new TouristSpot(distance, (String) spot.get("title"), Double.parseDouble((String) spot.get("mapy")), Double.parseDouble((String) spot.get("mapx")), (String) spot.get("cat1"), (String) spot.get("cat2"), (String) spot.get("cat3"), (String) spot.get("firstimage"));
+    }
+
+    @PostConstruct
+    public void init() {
+        try {
+            fetchAndSaveTouristSpots();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void fetchAndSaveTouristSpots() throws URISyntaxException, JsonProcessingException {
+        String url = "https://apis.data.go.kr/B551011/KorService1/areaBasedList1?numOfRows=2300&MobileOS=ETC&MobileApp=AppTest&ServiceKey="
+                + tourApi +
+                "&listYN=Y&arrange=A&contentTypeId=&areaCode=6&sigunguCode=&_type=json";
+
+        String response = restTemplate.getForObject(new URI(url), String.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> responseMap = mapper.readValue(response, Map.class);
+
+        List<Map<String, Object>> items = (List<Map<String, Object>>) ((Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) responseMap.get("response")).get("body")).get("items")).get("item");
+
+        for (Map<String, Object> item : items) {
+            double distance = calculateDistance(
+                    curX, curY,
+                    Double.parseDouble((String) item.get("mapx")),
+                    Double.parseDouble((String) item.get("mapy"))
+            );
+            String title = (String) item.get("title");
+            String cat1 = (String) item.get("cat1");
+            String cat2 = (String) item.get("cat2");
+            String cat3 = (String) item.get("cat3");
+            Double mapY = Double.parseDouble((String) item.get("mapy"));
+            Double mapX = Double.parseDouble((String) item.get("mapx"));
+            String firstImage = (String) item.get("firstimage");
+
+            TouristSpot touristSpot = new TouristSpot(distance, title, mapY, mapX, cat1, cat2, cat3, firstImage);
+            touristSpotRepository.save(touristSpot);
+        }
     }
 }
