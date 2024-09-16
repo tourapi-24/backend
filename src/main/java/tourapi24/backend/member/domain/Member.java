@@ -3,6 +3,7 @@ package tourapi24.backend.member.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import tourapi24.backend.gaongi.domain.Gaongi;
 
 @Entity
 @EntityListeners(StringTrimmer.class)
@@ -35,4 +36,7 @@ public class Member {
     private String profileImage;
     private String birthday; // "0101" ~ "1231"
     private String bio;
+
+    @OneToOne(mappedBy = "member")
+    private Gaongi gaongi;
 }
