@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: backend
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  datasource:
+    url: jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+jwt:
+  expiration: 3600000 # 1 hour
+  temporary-expiration: 300000 # 5 minutes
+
+springdoc:
+  api-docs:
+    path: /docs/api
+  swagger-ui:
+    path: /docs/swagger-ui.html
+    operationsSorter: method
+
+key:
+  chatbot: ${API_KEY_CHATBOT}
+  gov: ${API_KEY_GOV}
+  google: ${API_KEY_GOOGLE}
