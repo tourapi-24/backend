@@ -17,14 +17,14 @@ import java.util.stream.Collectors;
 @Service
 public class RecommendService {
 
-    @Value("${api.tour}")
-    private String tourApi;
+    private static final int RECOMMENDATIONS_COUNT = 5;
     private static double curX;
     private static double curY;
-    private static final int RECOMMENDATIONS_COUNT = 5;
+    @Value("${key.gov}")
+    private String tourApi;
 
     private static double calculateDistance(double x1, double y1, double x2, double y2) {
-        return Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2);
+        return Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2);
     }
 
     public List<TouristSpot> recommendByAgeGenderLoc(AgeRange age, Gender gender, Double lat, Double lot) {
@@ -49,7 +49,7 @@ public class RecommendService {
         String cat2 = "";
         String cat3 = "";
 
-        switch(age) {
+        switch (age) {
             case TEEN:
                 cat1 = "A02"; // 레포츠, 체험 관광지
                 cat2 = "A0201"; // 역사 관광지
