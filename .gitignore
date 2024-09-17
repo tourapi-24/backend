@@ -43,6 +43,10 @@ h2.mv.db.bak
 ### Test application.yml ###
 src/test/resources/application.yml
 
+
+### Docker Compose ###
+docker-compose.yml
+
 ### Key Files ###
 *.pem
 
