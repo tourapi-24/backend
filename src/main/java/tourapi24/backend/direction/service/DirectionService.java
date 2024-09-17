@@ -15,13 +15,12 @@ import java.util.List;
 @Service
 public class DirectionService {
 
-    @Value("${api.google}")
-    private String api;
-
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     RestTemplate restTemplate;
+    @Value("${key.google}")
+    private String api;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
     public ResponseEntity<?> getRoute(String origin, String destination) {
 
         try {

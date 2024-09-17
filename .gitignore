@@ -40,6 +40,9 @@ out/
 h2.mv.db
 h2.mv.db.bak
 
+### Test application.yml ###
+src/test/resources/application.yml
+
 ### Key Files ###
 *.pem
 
