@@ -13,12 +13,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public int updateUsername(Long id, String username) {
-        return memberRepository.updateUsernameById(id, username);
-
-    }
-
-    @Transactional
     public int updateBio(Long id, String bio) {
         return memberRepository.updateUsernameById(id, bio);
     }
