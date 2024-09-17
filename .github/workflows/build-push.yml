@@ -15,8 +15,13 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: "21"
+          distribution: "temurin"
+
+      - name: Create key files
+        run: |
+          echo "${{ secrets.PRIVATE_KEY }}" > src/main/resources/private_key.pem
+          echo "${{ secrets.PUBLIC_KEY }}" > src/main/resources/public_key.pem
 
       - name: Cache Gradle packages
         uses: actions/cache@v4
@@ -45,11 +50,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.YSM_GHCR_SECRET }}
-
-      - name: Create key files
-        run: |
-          echo "${{ secrets.PRIVATE_KEY }}" > src/main/resources/private_key.pem
-          echo "${{ secrets.PUBLIC_KEY }}" > src/main/resources/public_key.pem
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
