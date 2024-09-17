@@ -16,6 +16,6 @@ springdoc:
     operationsSorter: method
 
 key:
-  chatbot: 80d00701-1ff2-4a4b-96dc-a65764b06616
-  gov: jB3SyLOqdLt56zmTKWsAe2nN9cvg5GUHteoOev9Sq/uw8DQLZgB85Ki1dIko6uQov/LV5CH4qnquYrNOYpS6jw==
-  google: AIzaSyCfjBEtpw62cHRX1D2tJN1zyBee5WKZQ9A
+  chatbot: ${API_KEY_CHATBOT}
+  gov: ${API_KEY_GOV}
+  google: ${API_KEY_GOOGLE}
