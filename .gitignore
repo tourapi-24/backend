@@ -42,3 +42,6 @@ h2.mv.db.bak
 
 ### Key Files ###
 *.pem
+
+### Mac OS ###
+.DS_Store
