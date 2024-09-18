@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import tourapi24.backend.gaongi.domain.Gaongi;
+import tourapi24.backend.gaongi.repository.GaongiRepository;
 import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Gender;
 import tourapi24.backend.member.domain.Member;
@@ -24,6 +26,9 @@ public class RegisterServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private GaongiRepository gaongiRepository;
 
     @Value("${oauth.access-token}")
     private String realAccessToken;
@@ -52,5 +57,9 @@ public class RegisterServiceTest {
         assertEquals(request.getBirthday(), member.getBirthday());
         assertEquals(request.getAgeRange(), member.getAgeRange());
         assertEquals(request.getGender(), member.getGender());
+
+        Gaongi gaongi = gaongiRepository.findByMemberId(member.getId());
+        assertEquals(1, gaongi.getLevel());
+        assertEquals(0, gaongi.getExp());
     }
 }

@@ -28,5 +28,5 @@ public class Gaongi {
 
     @NotNull
     @Builder.Default
-    private Integer food = 0;
+    private Integer exp = 0;
 }

@@ -3,6 +3,7 @@ package tourapi24.backend.member.service.auth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tourapi24.backend.gaongi.service.GaongiService;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.dto.auth.LoginResponse;
 import tourapi24.backend.member.dto.auth.RegisterRequest;
@@ -16,6 +17,7 @@ public class RegisterService {
     private final OAuthClient oAuthClient;
     private final MemberRepository memberRepository;
     private final JwtService jwtService;
+    private final GaongiService gaongiService;
 
     @Transactional
     public LoginResponse register(RegisterRequest request) {
@@ -24,7 +26,8 @@ public class RegisterService {
                 request.getAccessToken()
         );
         Member member = memberRepository.save(userInfo.toMember(request));
-
+        gaongiService.create(member);
+        
         return LoginResponse.builder()
                 .token(jwtService.generateToken(member))
                 .build();
