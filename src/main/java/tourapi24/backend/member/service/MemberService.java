@@ -14,6 +14,6 @@ public class MemberService {
 
     @Transactional
     public int updateBio(Long id, String bio) {
-        return memberRepository.updateUsernameById(id, bio);
+        return memberRepository.updateBioById(id, bio);
     }
 }
