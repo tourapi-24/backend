@@ -14,6 +14,7 @@ import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Gender;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.domain.Provider;
+import tourapi24.backend.member.dto.auth.RegisterRequest;
 import tourapi24.backend.member.service.auth.JwtService;
 import tourapi24.backend.member.service.auth.UserInfo;
 
@@ -41,6 +42,7 @@ class JwtServiceTest {
     // Mock Data
     private Member mockMember;
     private UserInfo mockUserInfo;
+    private RegisterRequest mockRegisterRequest;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -53,7 +55,15 @@ class JwtServiceTest {
                 .ageRange(AgeRange.TWENTY)
                 .birthday("0101")
                 .build();
-        mockMember = mockUserInfo.toMember();
+
+        mockRegisterRequest = RegisterRequest.builder()
+                .username("testuser")
+                .gender(Gender.MALE)
+                .ageRange(AgeRange.TWENTY)
+                .birthday("0101")
+                .build();
+
+        mockMember = mockUserInfo.toMember(mockRegisterRequest);
 
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(2048);

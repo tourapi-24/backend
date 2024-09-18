@@ -7,6 +7,7 @@ import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Gender;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.domain.Provider;
+import tourapi24.backend.member.dto.auth.RegisterRequest;
 
 @Getter
 @Builder
@@ -23,16 +24,16 @@ public class UserInfo {
     private String birthday;
     // String bio -> set on my page
 
-    public Member toMember() {
+    public Member toMember(RegisterRequest request) {
         return Member.builder()
                 .socialId(socialId)
                 .email(email)
-                .username(username)
+                .username(request.getUsername())
                 .provider(provider)
-                .gender(gender)
-                .ageRange(ageRange)
+                .gender(request.getGender())
+                .ageRange(request.getAgeRange())
                 .profileImage(profileImage)
-                .birthday(birthday)
+                .birthday(request.getBirthday())
                 .build();
     }
 }

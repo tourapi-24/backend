@@ -61,7 +61,7 @@ public class OAuthServiceTest {
                                 .build())
                         .build())
                 .build();
-        mockKakaoMember = mockKakaoUserInfoResponse.toUserInfo().toMember();
+        mockKakaoMember = Member.builder().build();
     }
 
     @Test

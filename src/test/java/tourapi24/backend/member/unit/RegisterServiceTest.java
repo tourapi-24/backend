@@ -67,7 +67,7 @@ public class RegisterServiceTest {
                                 .build())
                         .build())
                 .build();
-        mockKakaoMember = mockKakaoUserInfoResponse.toUserInfo().toMember();
+        mockKakaoMember = mockKakaoUserInfoResponse.toUserInfo().toMember(mockKakaoRegisterRequest);
     }
 
     @Test

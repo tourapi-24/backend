@@ -19,13 +19,11 @@ public class RegisterService {
 
     @Transactional
     public LoginResponse register(RegisterRequest request) {
-        System.out.println("request = " + request);
         UserInfo userInfo = oAuthClient.fetchUserInfo(
                 request.getProvider(),
                 request.getAccessToken()
         );
-        System.out.println("userInfo = " + userInfo);
-        Member member = memberRepository.save(userInfo.toMember());
+        Member member = memberRepository.save(userInfo.toMember(request));
 
         return LoginResponse.builder()
                 .token(jwtService.generateToken(member))
