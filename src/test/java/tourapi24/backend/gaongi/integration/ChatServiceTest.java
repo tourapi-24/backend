@@ -34,7 +34,7 @@ class ChatServiceTest {
     private ChatService chatService;
 
     @Test
-    void chat() {
+    void 채팅() {
         // given
         when(gaongiRepository.findByMemberId(any()))
                 .thenReturn(gaongi);
