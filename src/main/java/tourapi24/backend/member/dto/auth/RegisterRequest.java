@@ -37,4 +37,7 @@ public class RegisterRequest {
 
     @JsonProperty("gender")
     private Gender gender;
+
+    @JsonProperty("is_local")
+    private Boolean isLocal;
 }

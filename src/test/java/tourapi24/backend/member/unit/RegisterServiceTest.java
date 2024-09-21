@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tourapi24.backend.gaongi.service.GaongiService;
 import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Gender;
 import tourapi24.backend.member.domain.Member;
@@ -21,8 +22,7 @@ import tourapi24.backend.member.service.auth.RegisterService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class RegisterServiceTest {
@@ -35,6 +35,9 @@ public class RegisterServiceTest {
 
     @Mock
     private JwtService jwtService;
+
+    @Mock
+    private GaongiService gaongiService;
 
     @InjectMocks
     private RegisterService registerService;
@@ -53,6 +56,7 @@ public class RegisterServiceTest {
                 .birthday("0903")
                 .ageRange(AgeRange.TWENTY)
                 .gender(Gender.MALE)
+                .isLocal(true)
                 .build();
 
         mockKakaoUserInfoResponse = KakaoUserInfoResponse.builder()
@@ -79,6 +83,7 @@ public class RegisterServiceTest {
                 .thenReturn(mockKakaoMember);
         when(jwtService.generateToken(any()))
                 .thenReturn("mock_jwt");
+        doNothing().when(gaongiService).create(any());
 
         // then
         LoginResponse response = registerService.register(mockKakaoRegisterRequest);

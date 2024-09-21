@@ -61,6 +61,7 @@ class JwtServiceTest {
                 .gender(Gender.MALE)
                 .ageRange(AgeRange.TWENTY)
                 .birthday("0101")
+                .isLocal(true)
                 .build();
 
         mockMember = mockUserInfo.toMember(mockRegisterRequest);

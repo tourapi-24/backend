@@ -34,6 +34,7 @@ public class UserInfo {
                 .ageRange(request.getAgeRange())
                 .profileImage(profileImage)
                 .birthday(request.getBirthday())
+                .isLocal(request.getIsLocal())
                 .build();
     }
 }

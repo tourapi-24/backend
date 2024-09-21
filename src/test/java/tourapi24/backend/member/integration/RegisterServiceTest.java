@@ -46,6 +46,7 @@ public class RegisterServiceTest {
                 .birthday("0230") // 실제 OAUth Privider에는 저장될 수 없는 생일로 설정해 Request 기반으로 저장하고 있는지 확인
                 .ageRange(AgeRange.SIXTY)
                 .gender(Gender.FEMALE)
+                .isLocal(true)
                 .build();
 
         // when
@@ -57,6 +58,7 @@ public class RegisterServiceTest {
         assertEquals(request.getBirthday(), member.getBirthday());
         assertEquals(request.getAgeRange(), member.getAgeRange());
         assertEquals(request.getGender(), member.getGender());
+        assertEquals(request.getIsLocal(), member.getIsLocal());
 
         Gaongi gaongi = gaongiRepository.findByMemberId(member.getId());
         assertEquals(1, gaongi.getLevel());

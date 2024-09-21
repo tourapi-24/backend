@@ -28,13 +28,22 @@ public class Member {
     @Enumerated(value = EnumType.STRING)
     private Provider provider;
 
+    @NotNull
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
+
+    @NotNull
     @Enumerated(value = EnumType.STRING)
     private AgeRange ageRange;
 
-    private String profileImage;
+    @NotNull
     private String birthday; // "0101" ~ "1231"
+
+    @NotNull
+    private Boolean isLocal;
+
+    private String profileImage;
+
     private String bio;
 
     @OneToOne(mappedBy = "member")
