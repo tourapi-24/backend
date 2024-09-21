@@ -40,9 +40,9 @@ out/
 h2.mv.db
 h2.mv.db.bak
 
-### Test application.yml ###
+### application.yml ###
 src/test/resources/application.yml
-
+src/main/resources/application-local.yml
 
 ### Docker Compose ###
 docker-compose.yml
