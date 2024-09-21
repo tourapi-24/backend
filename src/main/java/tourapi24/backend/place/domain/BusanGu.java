@@ -3,6 +3,8 @@ package tourapi24.backend.place.domain;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 @Getter
 @RequiredArgsConstructor
 public enum BusanGu {
@@ -31,8 +33,9 @@ public enum BusanGu {
                 return busanGu;
             }
         }
-
-        throw new IllegalArgumentException("부산광역시에 해당 구가 존재하지 않습니다: " + guName);
+        
+        BusanGu[] values = BusanGu.values();
+        return values[ThreadLocalRandom.current().nextInt(values.length)];
     }
 
     public static BusanGu getBusanGuByGuCode(int guCode) {
