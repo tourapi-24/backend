@@ -73,8 +73,14 @@ public class Crawl {
     }
 
     private List<AreaBasedListResponse.Item> fetchAreaBasedList(int limit) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", "*/*;q=0.9");
         String url = String.format(GOV_AREA_BASED_LIST_URL, limit, govKey);
-        AreaBasedListResponse response = restTemplate.getForObject(url, AreaBasedListResponse.class);
+        AreaBasedListResponse response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                AreaBasedListResponse.class).getBody();
         if (response == null ||
                 response.getResponse() == null ||
                 response.getResponse().getBody() == null
