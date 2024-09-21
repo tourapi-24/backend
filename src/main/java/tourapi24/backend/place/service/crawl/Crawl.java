@@ -9,7 +9,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import tourapi24.backend.place.domain.GovContentTypeId;
+import tourapi24.backend.place.domain.BusanGu;
+import tourapi24.backend.place.domain.GovContentType;
 import tourapi24.backend.place.domain.Place;
 import tourapi24.backend.place.dto.external.gov.AreaBasedListResponse;
 import tourapi24.backend.place.dto.external.kakao.KakaoLocalResponse;
@@ -25,7 +26,7 @@ import java.util.List;
 public class Crawl {
 
     private static final String GOV_AREA_BASED_LIST_URL = "https://apis.data.go.kr/B551011/KorService1/areaBasedList1?numOfRows=%d&MobileOS=ETC&MobileApp=OH&_type=json&contentTypeId=&areaCode=6&serviceKey=%s";
-    private static final String KAKAO_LOCAL_SEARCH_URL = "https://dapi.kakao.com/v2/local/search/keyword.json?query=%s";
+    private static final String KAKAO_LOCAL_SEARCH_URL = "https://dapi.kakao.com/v2/local/search/keyword.json?query=%s&x=%s&y=%s";
     private static final String KAKAO_PLACE_URL = "https://place.map.kakao.com/main/v/%d";
 
     private final PlaceRepository placeRepository;
@@ -38,19 +39,25 @@ public class Crawl {
     private String kakaoKey;
 
     @Transactional
-    public void fetch(int limit) {
+    public void crawlAndSave(int limit) {
+        log.info("START CRAWLING");
+
         List<AreaBasedListResponse.Item> items = fetchAreaBasedList(limit);
 
         for (AreaBasedListResponse.Item item : items) {
             if (!isValidContentType(item)) {
-                log.debug("Skip course");
                 continue;
             }
 
             try {
-                KakaoLocalResponse kakaoLocalResponse = fetchKakaoPlaceId(item.getTitle());
+                KakaoLocalResponse kakaoLocalResponse = fetchKakaoPlaceId(item.getTitle(), item.getMapx(), item.getMapy());
                 Long kakaoPlaceId = extractKakaoPlaceId(kakaoLocalResponse);
-                log.debug("Kakao Place ID: {}", kakaoPlaceId);
+                if (kakaoPlaceId == 0) { // 카카오맵에 등록되지 않은 장소
+                    continue;
+                }
+                if (!kakaoLocalResponse.getDocuments().getFirst().getRoadAddressName().contains("부산")) {
+                    continue;
+                }
 
                 KakaoPlaceResponse kakaoPlaceResponse = fetchKakaoCongestion(kakaoPlaceId);
                 String address = determineAddress(kakaoLocalResponse);
@@ -61,6 +68,8 @@ public class Crawl {
                 log.error("Error processing item: {}", item.getTitle(), e);
             }
         }
+
+        log.info("END CRAWLING");
     }
 
     private List<AreaBasedListResponse.Item> fetchAreaBasedList(int limit) {
@@ -75,14 +84,16 @@ public class Crawl {
         return response.getResponse().getBody().getItems().getItem();
     }
 
+    // 여행코스와 숙박 제외
     private boolean isValidContentType(AreaBasedListResponse.Item item) {
-        return Integer.parseInt(item.getContenttypeid()) != GovContentTypeId.여행코스.getId();
+        return Integer.parseInt(item.getContenttypeid()) != GovContentType.여행코스.getId()
+                && Integer.parseInt(item.getContenttypeid()) != GovContentType.숙박.getId();
     }
 
-    private KakaoLocalResponse fetchKakaoPlaceId(String title) {
+    private KakaoLocalResponse fetchKakaoPlaceId(String title, String mapx, String mapy) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "KakaoAK " + kakaoKey);
-        String url = String.format(KAKAO_LOCAL_SEARCH_URL, title);
+        String url = String.format(KAKAO_LOCAL_SEARCH_URL, title, mapx, mapy);
         return restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -92,7 +103,7 @@ public class Crawl {
 
     private Long extractKakaoPlaceId(KakaoLocalResponse response) {
         if (response == null || response.getDocuments().isEmpty()) {
-            throw new IllegalStateException("No Kakao place found");
+            return 0L;
         }
         String placeUrl = response.getDocuments().getFirst().getPlaceUrl();
         return Long.parseLong(placeUrl.split("/")[3]);
@@ -112,9 +123,10 @@ public class Crawl {
         Place.PlaceBuilder builder = Place.builder()
                 .contentId(Long.parseLong(item.getContentid()))
                 .kakaoId(kakaoPlaceId)
-                .contentTypeId(GovContentTypeId.fromId(Integer.parseInt(item.getContenttypeid())))
+                .contentType(GovContentType.fromId(Integer.parseInt(item.getContenttypeid())))
                 .title(item.getTitle())
                 .tel(kakaoPlaceResponse.getBasicInfo().getPhonenum())
+                .busanGu(BusanGu.getBusanGuByGuCode(Integer.parseInt(item.getSigungucode())))
                 .address(address);
 
         Place place;

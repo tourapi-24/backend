@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum GovContentTypeId {
+public enum GovContentType {
     관광지(12),
     문화시설(14),
     축제공연행사(15),
@@ -17,8 +17,8 @@ public enum GovContentTypeId {
 
     private final Integer id;
 
-    public static GovContentTypeId fromId(int id) {
-        for (GovContentTypeId value : values()) {
+    public static GovContentType fromId(int id) {
+        for (GovContentType value : values()) {
             if (value.id == id) {
                 return value;
             }

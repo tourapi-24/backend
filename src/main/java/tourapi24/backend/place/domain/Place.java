@@ -16,8 +16,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Place {
-
+    
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @NotNull
     private Long contentId; // tourapi ID
 
@@ -26,7 +29,7 @@ public class Place {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private GovContentTypeId contentTypeId;
+    private GovContentType contentType;
 
     @NotNull
     private String title;
@@ -38,6 +41,10 @@ public class Place {
     @NotNull
     @NotEmpty
     private String address;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private BusanGu busanGu;
 
     @ElementCollection
     @CollectionTable(name = "place_images", joinColumns = @JoinColumn(name = "content_id"))

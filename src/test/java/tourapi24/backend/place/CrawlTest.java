@@ -3,12 +3,14 @@ package tourapi24.backend.place;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import tourapi24.backend.place.repository.PlaceRepository;
 import tourapi24.backend.place.service.crawl.Crawl;
 
 @SpringBootTest
 @Transactional
+@Rollback(false)
 public class CrawlTest {
 
     @Autowired
@@ -19,10 +21,6 @@ public class CrawlTest {
 
     @Test
     void 크롤링() {
-        // given
-        // when
-        crawl.fetch(10);
-        // then
-        placeRepository.findAll().forEach(System.out::println);
+        crawl.crawlAndSave(3000);
     }
 }
