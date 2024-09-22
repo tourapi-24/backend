@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import tourapi24.backend.place.domain.BusanGu;
 import tourapi24.backend.place.domain.GovContentType;
 import tourapi24.backend.place.domain.Place;
+import tourapi24.backend.place.dto.PlaceDetailResponse;
 import tourapi24.backend.place.dto.PlaceRecommendationResponse;
 import tourapi24.backend.place.dto.external.kakao.KakaoCoordResponse;
 import tourapi24.backend.place.repository.PlaceRepository;
@@ -53,6 +54,18 @@ public class PlaceService {
         }
 
         return responses;
+    }
+
+    public PlaceDetailResponse getPlaceDetail(Long placeId) {
+        Place place = placeRepository.findById(placeId).orElseThrow();
+
+        return PlaceDetailResponse.builder()
+                .title(place.getTitle())
+                .contentType(place.getContentType())
+                .imageUrls(place.getImages())
+                .congestionLevel(calculateCongestionLevel(getCurrentCongestion(place, getCurrentHour())))
+                .address(place.getAddress())
+                .build();
     }
 
     private int getCurrentHour() {

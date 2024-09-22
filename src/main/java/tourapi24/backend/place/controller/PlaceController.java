@@ -8,14 +8,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import tourapi24.backend.place.dto.PlaceDetailResponse;
 import tourapi24.backend.place.dto.PlaceRecommendationResponse;
 import tourapi24.backend.place.service.PlaceService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/place")
@@ -28,7 +27,7 @@ public class PlaceController {
     @GetMapping("/recommendation")
     @Operation(
             summary = "혼잡도 기반으로 명소를 추천합니다",
-            description = "congestionLevel 0, 1, 2는 각각 여유, 보통, 혼잡을 나타냅니다",
+            description = "congestion_level 0, 1, 2는 각각 여유, 보통, 혼잡을 나타냅니다",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -48,5 +47,29 @@ public class PlaceController {
             @RequestParam double y
     ) {
         return ResponseEntity.ok(placeService.recommendPlaces(contentType, x, y));
+    }
+
+    @GetMapping("/detail/{id}")
+    @Operation(
+            summary = "명소의 상세 정보를 조회합니다",
+            description = "congestion_level 0, 1, 2는 각각 여유, 보통, 혼잡을 나타냅니다",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = PlaceDetailResponse.class)
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<PlaceDetailResponse> getPlaceDetail(@PathVariable Long id) {
+        PlaceDetailResponse response;
+        try {
+            response = placeService.getPlaceDetail(id);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
     }
 }
