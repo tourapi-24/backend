@@ -18,8 +18,8 @@ import tourapi24.backend.place.repository.PlaceRepository;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class PlaceService {
     @Value("${key.kakao}")
     private String kakaoKey;
 
-    public List<PlaceRecommendationResponse> recommendPlaces(String contentType, double x, double y) {
+    public PlaceRecommendationResponse recommendPlaces(String contentType, double x, double y) {
         int currentHour = getCurrentHour();
         BusanGu busanGu = getBusanGuByLocation(x, y);
         List<Place> places = placeRepository.findPlacesByBusanGuAndContentTypeOrderByCongestion(
@@ -42,18 +42,20 @@ public class PlaceService {
                 GovContentType.valueOf(contentType),
                 currentHour
         );
-        List<PlaceRecommendationResponse> responses = new ArrayList<>();
 
-        for (Place place : places) {
-            responses.add(PlaceRecommendationResponse.builder()
-                    .title(place.getTitle())
-                    .contentType(place.getContentType())
-                    .imageUrl(place.getImages().stream().findFirst().orElse(null))
-                    .congestionLevel(calculateCongestionLevel(getCurrentCongestion(place, currentHour)))
-                    .build());
-        }
+        List<PlaceRecommendationResponse.Place> responsePlaces = places.stream()
+                .map(place -> PlaceRecommendationResponse.Place.builder()
+                        .title(place.getTitle())
+                        .contentType(place.getContentType())
+                        .imageUrl(place.getImages().stream().findFirst().orElse(null))
+                        .congestionLevel(calculateCongestionLevel(getCurrentCongestion(place, currentHour)))
+                        .build())
+                .collect(Collectors.toList());
 
-        return responses;
+        return PlaceRecommendationResponse.builder()
+                .gu(busanGu)
+                .places(responsePlaces)
+                .build();
     }
 
     public PlaceDetailResponse getPlaceDetail(Long placeId) {

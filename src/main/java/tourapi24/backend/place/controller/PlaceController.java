@@ -13,7 +13,6 @@ import tourapi24.backend.place.dto.PlaceDetailResponse;
 import tourapi24.backend.place.dto.PlaceRecommendationResponse;
 import tourapi24.backend.place.service.PlaceService;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -38,7 +37,7 @@ public class PlaceController {
                     )
             }
     )
-    public ResponseEntity<List<PlaceRecommendationResponse>> recommendPlaces(
+    public ResponseEntity<PlaceRecommendationResponse> recommendPlaces(
             @Parameter(description = "관광지, 문화시설, 축제공연행사, 레포츠, 음식점")
             @RequestParam String contentType,
             @Parameter(description = "경도")
