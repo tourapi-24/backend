@@ -33,7 +33,11 @@ public enum BusanGu {
                 return busanGu;
             }
         }
-        
+
+        throw new IllegalArgumentException("부산광역시에 해당 구 이름이 존재하지 않습니다: " + guName);
+    }
+
+    public static BusanGu getRandomBusanGu() {
         BusanGu[] values = BusanGu.values();
         return values[ThreadLocalRandom.current().nextInt(values.length)];
     }
@@ -48,4 +52,3 @@ public enum BusanGu {
         throw new IllegalArgumentException("부산광역시에 해당 구 코드가 존재하지 않습니다: " + guCode);
     }
 }
-

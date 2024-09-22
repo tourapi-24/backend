@@ -105,16 +105,20 @@ public class PlaceService {
 
         String url = String.format(KAKAO_COORD_URL, x, y);
 
-        KakaoCoordResponse response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                KakaoCoordResponse.class
-        ).getBody();
+        KakaoCoordResponse response;
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    new HttpEntity<>(headers),
+                    KakaoCoordResponse.class
+            ).getBody();
+        } catch (Exception e) {
+            return BusanGu.getRandomBusanGu();
+        }
 
-
-        if (response == null) {
-            throw new IllegalStateException("KAKAO API problem");
+        if (response == null || response.getDocuments().isEmpty()) {
+            return BusanGu.getRandomBusanGu();
         }
 
         return BusanGu.getBusanGuByGuName(
