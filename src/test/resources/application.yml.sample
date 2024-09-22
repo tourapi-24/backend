@@ -11,6 +11,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+  sql:
+    init:
+      encoding: UTF-8
+
 
 jwt:
   expiration: 3600000 # 1 hour
