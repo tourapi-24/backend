@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import tourapi24.backend.gaongi.domain.Gaongi;
+import tourapi24.backend.relationship.memberlikeplace.MemberLikePlace;
+import tourapi24.backend.travellog.domain.TravelLog;
+
+import java.util.List;
 
 @Entity
 @EntityListeners(StringTrimmer.class)
@@ -48,4 +52,10 @@ public class Member {
 
     @OneToOne(mappedBy = "member")
     private Gaongi gaongi;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<TravelLog> travelLogs;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<MemberLikePlace> likePlaces;
 }

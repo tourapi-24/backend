@@ -4,11 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import tourapi24.backend.travellog.domain.TravelLog;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@ToString //TODO DEBUG
+//@ToString //TODO DEBUG
 @Entity
 @Table
 @Getter
@@ -16,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Place {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,8 +35,6 @@ public class Place {
     @NotNull
     private String title;
 
-    //TODO: 방문일기
-
     private String tel;
 
     @NotNull
@@ -47,14 +46,19 @@ public class Place {
     private BusanGu busanGu;
 
     @ElementCollection
-    @CollectionTable(name = "place_images", joinColumns = @JoinColumn(name = "content_id"))
+    @CollectionTable(name = "place_images", joinColumns = @JoinColumn(name = "place_id"))
     @Column(name = "image")
     @Builder.Default
     private List<String> images = new ArrayList<>();
 
+    @OneToMany(mappedBy = "place", fetch = FetchType.LAZY)
+    private List<TravelLog> travelLogs;
+
+    @Builder.Default
+    private Long likeCount = 0L;
+
     @NotNull
     private Boolean isCongestion;
-
     // Congestion Data
     private Float congestion_00;
     private Float congestion_01;
@@ -80,6 +84,14 @@ public class Place {
     private Float congestion_21;
     private Float congestion_22;
     private Float congestion_23;
+
+    public void addImage(String url) {
+        this.images.add(url);
+    }
+
+    public void updateLikeCount(Long count) {
+        this.likeCount = count;
+    }
 
     public void setCongestionData(Integer max, List<Integer> avg) {
         this.congestion_00 = (float) avg.get(0) / max;
@@ -108,7 +120,5 @@ public class Place {
         this.congestion_23 = (float) avg.get(23) / max;
     }
 
-    public void addImage(String url) {
-        this.images.add(url);
-    }
+
 }

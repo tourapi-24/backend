@@ -26,8 +26,9 @@ public class RegisterService {
                 request.getAccessToken()
         );
         Member member = memberRepository.save(userInfo.toMember(request));
+        System.out.println(member.getId());
         gaongiService.create(member);
-        
+
         return LoginResponse.builder()
                 .token(jwtService.generateToken(member))
                 .build();
