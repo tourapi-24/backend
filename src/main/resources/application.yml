@@ -23,3 +23,6 @@ key:
   gov: ${API_KEY_GOV}
   kakao: ${API_KEY_KAKAO}
   google: ${API_KEY_GOOGLE}
+
+file:
+  upload-dir: ${user.home}/tourapi24/uploads

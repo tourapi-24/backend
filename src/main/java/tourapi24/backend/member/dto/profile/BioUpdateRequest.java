@@ -1,4 +1,4 @@
-package tourapi24.backend.member.dto.mypage;
+package tourapi24.backend.member.dto.profile;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
