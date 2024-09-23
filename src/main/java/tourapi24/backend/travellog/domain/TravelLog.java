@@ -65,4 +65,11 @@ public class TravelLog {
 
     @NotNull
     private String content;
+
+    @Builder.Default
+    private Long likeCount = 0L;
+
+    public void updateLikeCount(Long likeCount) {
+        this.likeCount = likeCount;
+    }
 }

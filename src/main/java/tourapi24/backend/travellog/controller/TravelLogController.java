@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tourapi24.backend.annotation.CurrentUser;
 import tourapi24.backend.annotation.CurrentUserInfo;
+import tourapi24.backend.relationship.memberliketravellog.MemberLikeTravelLogService;
 import tourapi24.backend.travellog.dto.TravelLogCreateRequest;
 import tourapi24.backend.travellog.dto.TravelLogCreateResponse;
 import tourapi24.backend.travellog.dto.TravelLogResponse;
@@ -24,6 +25,7 @@ import tourapi24.backend.travellog.service.TravelLogService;
 public class TravelLogController {
 
     private final TravelLogService travelLogService;
+    private final MemberLikeTravelLogService memberLikeTravelLogService;
 
     @PostMapping
     @Operation(
@@ -40,11 +42,10 @@ public class TravelLogController {
                     @ApiResponse(responseCode = "400", content = @Content)
             }
     )
-    public ResponseEntity<TravelLogCreateResponse> createTravelLog(
+    public ResponseEntity<Long> createTravelLog(
             @RequestBody TravelLogCreateRequest request,
             @Parameter(hidden = true) @CurrentUser CurrentUserInfo userInfo
     ) {
-
         return new ResponseEntity<>(travelLogService.createTravelLog(userInfo, request), HttpStatus.CREATED);
     }
 
@@ -65,5 +66,41 @@ public class TravelLogController {
     public ResponseEntity<TravelLogResponse> getTravelLog(@PathVariable Long id) {
         TravelLogResponse travelLog = travelLogService.getTravelLog(id);
         return ResponseEntity.ok(travelLog);
+    }
+
+    @PostMapping("/{id}/like")
+    @Operation(
+            summary = "여행기 좋아요",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "여행기 좋아요 성공"
+                    )
+            }
+    )
+    public ResponseEntity<?> likeTravelLog(
+            @PathVariable Long id,
+            @Parameter(hidden = true) @CurrentUser CurrentUserInfo userInfo
+    ) {
+        memberLikeTravelLogService.likeTravelLog(userInfo.getUserId(), id);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}/like")
+    @Operation(
+            summary = "여행기 좋아요 취소",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "여행기 좋아요 취소 성공"
+                    )
+            }
+    )
+    public ResponseEntity<?> unlikeTravelLog(
+            @PathVariable Long id,
+            @Parameter(hidden = true) @CurrentUser CurrentUserInfo userInfo
+    ) {
+        memberLikeTravelLogService.unlikeTravelLog(userInfo.getUserId(), id);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

@@ -9,7 +9,6 @@ import tourapi24.backend.place.domain.Place;
 import tourapi24.backend.place.repository.PlaceRepository;
 import tourapi24.backend.travellog.domain.TravelLog;
 import tourapi24.backend.travellog.dto.TravelLogCreateRequest;
-import tourapi24.backend.travellog.dto.TravelLogCreateResponse;
 import tourapi24.backend.travellog.dto.TravelLogResponse;
 import tourapi24.backend.travellog.repository.TravelLogRepository;
 
@@ -21,7 +20,7 @@ public class TravelLogService {
     private final MemberRepository memberRepository;
     private final PlaceRepository placeRepository;
 
-    public TravelLogCreateResponse createTravelLog(CurrentUserInfo userInfo, TravelLogCreateRequest request) {
+    public Long createTravelLog(CurrentUserInfo userInfo, TravelLogCreateRequest request) {
         Member member = memberRepository.findById(userInfo.getUserId()).orElseThrow();
         Place place = placeRepository.findById(request.getPlaceId()).orElseThrow();
 
@@ -37,9 +36,8 @@ public class TravelLogService {
                 .media(request.getMedia())
                 .content(request.getContent())
                 .build();
-        return TravelLogCreateResponse.builder()
-                .travelLogId(travelLogRepository.save(travelLog).getId())
-                .build();
+
+        return travelLogRepository.save(travelLog).getId();
     }
 
     public TravelLogResponse getTravelLog(Long travelLogId) {

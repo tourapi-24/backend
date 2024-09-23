@@ -2,6 +2,7 @@ package tourapi24.backend.relationship.memberlikeplace;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.repository.MemberRepository;
 import tourapi24.backend.place.domain.Place;
@@ -13,12 +14,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberLikePlaceService {
 
     private final MemberRepository memberRepository;
     private final PlaceRepository placeRepository;
     private final MemberLikePlaceRepository memberLikePlaceRepository;
 
+    @Transactional
     public void likePlace(Long memberId, Long placeId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
@@ -39,6 +42,7 @@ public class MemberLikePlaceService {
         placeRepository.save(place);
     }
 
+    @Transactional
     public void unlikePlace(Long memberId, Long placeId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
@@ -50,7 +54,7 @@ public class MemberLikePlaceService {
         place.updateLikeCount(memberLikePlaceRepository.countByPlace(place));
         placeRepository.save(place);
     }
-
+    
     public List<Place> getLikedPlaces(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
