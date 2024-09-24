@@ -91,7 +91,7 @@ public class TravelLogController {
             summary = "여행기 좋아요 취소",
             responses = {
                     @ApiResponse(
-                            responseCode = "201",
+                            responseCode = "204",
                             description = "여행기 좋아요 취소 성공"
                     )
             }
@@ -101,6 +101,6 @@ public class TravelLogController {
             @Parameter(hidden = true) @CurrentUser CurrentUserInfo userInfo
     ) {
         memberLikeTravelLogService.unlikeTravelLog(userInfo.getUserId(), id);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

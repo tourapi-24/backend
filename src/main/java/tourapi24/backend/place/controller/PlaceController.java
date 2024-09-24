@@ -7,11 +7,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tourapi24.backend.annotation.CurrentUser;
+import tourapi24.backend.annotation.CurrentUserInfo;
 import tourapi24.backend.place.dto.PlaceDetailResponse;
 import tourapi24.backend.place.dto.PlaceRecommendationResponse;
 import tourapi24.backend.place.service.PlaceService;
+import tourapi24.backend.relationship.memberlikeplace.MemberLikePlaceService;
 
 import java.util.NoSuchElementException;
 
@@ -22,6 +26,7 @@ import java.util.NoSuchElementException;
 public class PlaceController {
 
     private final PlaceService placeService;
+    private final MemberLikePlaceService memberLikePlaceService;
 
     @GetMapping("/recommendation")
     @Operation(
@@ -70,5 +75,41 @@ public class PlaceController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/like")
+    @Operation(
+            summary = "명소 좋아요",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "명소 좋아요 성공"
+                    )
+            }
+    )
+    public ResponseEntity<?> likePlace(
+            @PathVariable Long id,
+            @Parameter(hidden = true) @CurrentUser CurrentUserInfo userInfo
+    ) {
+        memberLikePlaceService.likePlace(userInfo.getUserId(), id);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}/like")
+    @Operation(
+            summary = "명소 좋아요 취소",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "명소 좋아요 취소 성공"
+                    )
+            }
+    )
+    public ResponseEntity<?> unlikePlace(
+            @PathVariable Long id,
+            @Parameter(hidden = true) @CurrentUser CurrentUserInfo userInfo
+    ) {
+        memberLikePlaceService.unlikePlace(userInfo.getUserId(), id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
