@@ -15,6 +15,7 @@ import tourapi24.backend.annotation.CurrentUserInfo;
 import tourapi24.backend.relationship.memberliketravellog.MemberLikeTravelLogService;
 import tourapi24.backend.travellog.dto.TravelLogCreateRequest;
 import tourapi24.backend.travellog.dto.TravelLogCreateResponse;
+import tourapi24.backend.travellog.dto.TravelLogFeedResponse;
 import tourapi24.backend.travellog.dto.TravelLogResponse;
 import tourapi24.backend.travellog.service.TravelLogService;
 
@@ -47,6 +48,25 @@ public class TravelLogController {
             @Parameter(hidden = true) @CurrentUser CurrentUserInfo userInfo
     ) {
         return new ResponseEntity<>(travelLogService.createTravelLog(userInfo, request), HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    @Operation(
+            summary = "여행기 피드 조회",
+            description = "최근 작성된 여행기 25개를 조회합니다",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = TravelLogFeedResponse.class)
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<TravelLogFeedResponse> getRecentTravelLogs() {
+        TravelLogFeedResponse travelLogs = travelLogService.getRecentTravelLogs();
+        return ResponseEntity.ok(travelLogs);
     }
 
     @GetMapping("/{id}")
