@@ -29,4 +29,28 @@ public class Gaongi {
     @NotNull
     @Builder.Default
     private Integer exp = 0;
+
+    public void increaseExp() {
+        this.exp++;
+    }
+
+    public void calcLevel() {
+        if ((this.exp >= 400) && (this.exp < 800)) {
+            if (this.level != 2) {
+                this.level = 2;
+            }
+        } else if (this.exp < 1300) {
+            if (this.level != 3) {
+                this.level = 3;
+            }
+        } else if (this.exp < 2500) {
+            if (this.level != 4) {
+                this.level = 4;
+            }
+        } else {
+            if (this.level != 5) {
+                this.level = 5;
+            }
+        }
+    }
 }
