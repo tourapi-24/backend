@@ -104,8 +104,10 @@ public class PlaceService {
         };
     }
 
-    private int calculateCongestionLevel(Float congestion) {
-        if (congestion < 0.3) {
+    private Integer calculateCongestionLevel(Float congestion) {
+        if (congestion == null) {  // 혼잡도 정보가 없는 경우
+            return null;
+        } else if (congestion < 0.3) {
             return 0; // 여유
         } else if (congestion < 0.6) {
             return 1; // 보통
