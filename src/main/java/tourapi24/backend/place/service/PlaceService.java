@@ -130,19 +130,19 @@ public class PlaceService {
                     new HttpEntity<>(headers),
                     KakaoCoordResponse.class
             ).getBody();
+
+            if (response == null || response.getDocuments().isEmpty()) {
+                return BusanGu.getRandomBusanGu();
+            }
+            
+            return BusanGu.getBusanGuByGuName(
+                    response
+                            .getDocuments()
+                            .getFirst()
+                            .getRegion2depthName()
+            );
         } catch (Exception e) {
             return BusanGu.getRandomBusanGu();
         }
-
-        if (response == null || response.getDocuments().isEmpty()) {
-            return BusanGu.getRandomBusanGu();
-        }
-
-        return BusanGu.getBusanGuByGuName(
-                response
-                        .getDocuments()
-                        .getFirst()
-                        .getRegion2depthName()
-        );
     }
 }
