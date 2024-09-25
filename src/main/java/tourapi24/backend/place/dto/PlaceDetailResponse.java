@@ -21,7 +21,7 @@ public class PlaceDetailResponse {
     private List<String> imageUrls;
 
     @JsonProperty("congestion_level")
-    private int congestionLevel;
+    private Integer congestionLevel;
 
     @JsonProperty("address")
     private String address;
