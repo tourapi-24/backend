@@ -9,4 +9,7 @@ import java.util.List;
 public interface TravelLogRepository extends JpaRepository<TravelLog, Long> {
     @Query("select t from TravelLog t order by t.date desc limit 25")
     List<TravelLog> findRecentTravelLogs();
+
+    @Query("select t from TravelLog t where t.title like %:query% order by t.date desc")
+    List<TravelLog> findTravelLogsByQuery(String query);
 }

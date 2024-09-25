@@ -10,7 +10,7 @@ import tourapi24.backend.place.domain.Place;
 import tourapi24.backend.place.repository.PlaceRepository;
 import tourapi24.backend.travellog.domain.TravelLog;
 import tourapi24.backend.travellog.dto.TravelLogCreateRequest;
-import tourapi24.backend.travellog.dto.TravelLogFeedResponse;
+import tourapi24.backend.travellog.dto.TravelLogListResponse;
 import tourapi24.backend.travellog.dto.TravelLogResponse;
 import tourapi24.backend.travellog.repository.TravelLogRepository;
 
@@ -36,12 +36,12 @@ public class TravelLogService {
 
     }
 
-    public TravelLogFeedResponse getRecentTravelLogs() {
+    public TravelLogListResponse getRecentTravelLogs() {
         List<TravelLogResponse> travelLogs = travelLogRepository.findRecentTravelLogs().stream()
                 .map(this::convertToTravelLogResponse)
                 .collect(Collectors.toList());
 
-        return TravelLogFeedResponse.builder()
+        return TravelLogListResponse.builder()
                 .travelLogs(travelLogs)
                 .build();
     }
@@ -49,6 +49,16 @@ public class TravelLogService {
     public TravelLogResponse getTravelLog(Long travelLogId) {
         TravelLog travelLog = travelLogRepository.findById(travelLogId).orElseThrow();
         return convertToTravelLogResponse(travelLog);
+    }
+
+    public TravelLogListResponse getTravelLogsByQuery(String query) {
+        List<TravelLogResponse> travelLogs = travelLogRepository.findTravelLogsByQuery(query).stream()
+                .map(this::convertToTravelLogResponse)
+                .collect(Collectors.toList());
+
+        return TravelLogListResponse.builder()
+                .travelLogs(travelLogs)
+                .build();
     }
 
     private TravelLog buildTravelLog(Member member, Place place, TravelLogCreateRequest request) {

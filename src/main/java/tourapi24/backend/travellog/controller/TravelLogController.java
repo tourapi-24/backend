@@ -15,7 +15,7 @@ import tourapi24.backend.annotation.CurrentUserInfo;
 import tourapi24.backend.relationship.memberliketravellog.MemberLikeTravelLogService;
 import tourapi24.backend.travellog.dto.TravelLogCreateRequest;
 import tourapi24.backend.travellog.dto.TravelLogCreateResponse;
-import tourapi24.backend.travellog.dto.TravelLogFeedResponse;
+import tourapi24.backend.travellog.dto.TravelLogListResponse;
 import tourapi24.backend.travellog.dto.TravelLogResponse;
 import tourapi24.backend.travellog.service.TravelLogService;
 
@@ -59,13 +59,13 @@ public class TravelLogController {
                             responseCode = "200",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = TravelLogFeedResponse.class)
+                                    schema = @Schema(implementation = TravelLogListResponse.class)
                             )
                     )
             }
     )
-    public ResponseEntity<TravelLogFeedResponse> getRecentTravelLogs() {
-        TravelLogFeedResponse travelLogs = travelLogService.getRecentTravelLogs();
+    public ResponseEntity<TravelLogListResponse> getRecentTravelLogs() {
+        TravelLogListResponse travelLogs = travelLogService.getRecentTravelLogs();
         return ResponseEntity.ok(travelLogs);
     }
 
@@ -86,6 +86,27 @@ public class TravelLogController {
     public ResponseEntity<TravelLogResponse> getTravelLog(@PathVariable Long id) {
         TravelLogResponse travelLog = travelLogService.getTravelLog(id);
         return ResponseEntity.ok(travelLog);
+    }
+
+    @GetMapping("/search")
+    @Operation(
+            summary = "여행기 검색",
+            description = "여행기 제목으로 여행기를 검색합니다",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = TravelLogListResponse.class)
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<TravelLogListResponse> searchTravelLog(
+            @RequestParam String query
+    ) {
+        TravelLogListResponse travelLogs = travelLogService.getTravelLogsByQuery(query);
+        return ResponseEntity.ok(travelLogs);
     }
 
     @PostMapping("/{id}/like")

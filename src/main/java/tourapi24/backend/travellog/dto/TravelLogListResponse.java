@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class TravelLogFeedResponse {
+public class TravelLogListResponse {
 
     @JsonProperty("travel_logs")
     private final List<TravelLogResponse> travelLogs;
