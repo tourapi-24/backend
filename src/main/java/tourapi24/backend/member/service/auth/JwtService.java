@@ -53,8 +53,6 @@ public class JwtService {
                 .claim("temp", true)
                 .claim("prvider", userInfo.getProvider())
                 .claim("username", userInfo.getUsername())
-                .claim("birthday", userInfo.getBirthday())
-                .claim("ageRange", userInfo.getAgeRange())
                 .claim("gender", userInfo.getGender())
                 .issuedAt(now)
                 .expiration(expiryDate)

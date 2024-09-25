@@ -37,13 +37,6 @@ public class Member {
     private Gender gender;
 
     @NotNull
-    @Enumerated(value = EnumType.STRING)
-    private AgeRange ageRange;
-
-    @NotNull
-    private String birthday; // "0101" ~ "1231"
-
-    @NotNull
     private Boolean isLocal;
 
     private String profileImage;

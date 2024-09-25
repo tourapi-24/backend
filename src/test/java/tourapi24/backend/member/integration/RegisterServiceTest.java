@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import tourapi24.backend.gaongi.domain.Gaongi;
 import tourapi24.backend.gaongi.repository.GaongiRepository;
-import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Gender;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.domain.Provider;
@@ -43,8 +42,6 @@ public class RegisterServiceTest {
                 .accessToken(realAccessToken)
                 .provider(Provider.KAKAO)
                 .username("username_from_request")
-                .birthday("0230") // 실제 OAUth Privider에는 저장될 수 없는 생일로 설정해 Request 기반으로 저장하고 있는지 확인
-                .ageRange(AgeRange.SIXTY)
                 .gender(Gender.FEMALE)
                 .isLocal(true)
                 .build();
@@ -55,8 +52,6 @@ public class RegisterServiceTest {
         // then
         Member member = memberRepository.findOneBySocialId(realSocialId).orElseThrow();
         assertEquals(request.getUsername(), member.getUsername());
-        assertEquals(request.getBirthday(), member.getBirthday());
-        assertEquals(request.getAgeRange(), member.getAgeRange());
         assertEquals(request.getGender(), member.getGender());
         assertEquals(request.getIsLocal(), member.getIsLocal());
 

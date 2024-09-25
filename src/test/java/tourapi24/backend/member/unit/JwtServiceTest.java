@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Gender;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.domain.Provider;
@@ -52,15 +51,11 @@ class JwtServiceTest {
                 .username("testuser")
                 .provider(Provider.KAKAO)
                 .gender(Gender.MALE)
-                .ageRange(AgeRange.TWENTY)
-                .birthday("0101")
                 .build();
 
         mockRegisterRequest = RegisterRequest.builder()
                 .username("testuser")
                 .gender(Gender.MALE)
-                .ageRange(AgeRange.TWENTY)
-                .birthday("0101")
                 .isLocal(true)
                 .build();
 
@@ -105,8 +100,6 @@ class JwtServiceTest {
         assertTrue((Boolean) claims.get("temp"));
         assertEquals("KAKAO", claims.get("prvider"));
         assertEquals("testuser", claims.get("username"));
-        assertEquals("0101", claims.get("birthday"));
-        assertEquals("TWENTY", claims.get("ageRange"));
         assertEquals("MALE", claims.get("gender"));
 
         Date expirationDate = claims.getExpiration();

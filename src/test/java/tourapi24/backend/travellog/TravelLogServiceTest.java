@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import tourapi24.backend.annotation.CurrentUserInfo;
-import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Gender;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.domain.Provider;
@@ -53,8 +52,6 @@ public class TravelLogServiceTest {
                 .username("user_1")
                 .provider(Provider.KAKAO)
                 .gender(Gender.MALE)
-                .ageRange(AgeRange.TWENTY)
-                .birthday("0101")
                 .isLocal(false)
                 .build();
         memberRepository.save(member);

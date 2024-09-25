@@ -3,7 +3,6 @@ package tourapi24.backend.member.service.auth;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Gender;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.domain.Provider;
@@ -19,9 +18,7 @@ public class UserInfo {
     private String username;
     private Provider provider;
     private Gender gender;
-    private AgeRange ageRange;
     private String profileImage;
-    private String birthday;
     // String bio -> set on my page
 
     public Member toMember(RegisterRequest request) {
@@ -31,9 +28,7 @@ public class UserInfo {
                 .username(request.getUsername())
                 .provider(provider)
                 .gender(request.getGender())
-                .ageRange(request.getAgeRange())
                 .profileImage(profileImage)
-                .birthday(request.getBirthday())
                 .isLocal(request.getIsLocal())
                 .build();
     }

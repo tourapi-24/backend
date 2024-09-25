@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tourapi24.backend.gaongi.service.GaongiService;
-import tourapi24.backend.member.domain.AgeRange;
 import tourapi24.backend.member.domain.Gender;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.domain.Provider;
@@ -53,8 +52,6 @@ public class RegisterServiceTest {
                 .accessToken("mock_access_token")
                 .provider(Provider.KAKAO)
                 .username("윤성민")
-                .birthday("0903")
-                .ageRange(AgeRange.TWENTY)
                 .gender(Gender.MALE)
                 .isLocal(true)
                 .build();
