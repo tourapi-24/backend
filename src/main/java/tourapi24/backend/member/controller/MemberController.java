@@ -41,9 +41,7 @@ public class MemberController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ProfileResponse.class)
                             )
-                    ),
-                    @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-                    @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자")
+                    )
             }
     )
     public ResponseEntity<ProfileResponse> getProfile(
@@ -56,9 +54,7 @@ public class MemberController {
     @Operation(
             summary = "Member의 프로필 사진을 변경합니다",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "프로필 이미지가 성공적으로 업데이트됨"),
-                    @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-                    @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자")
+                    @ApiResponse(responseCode = "201", description = "프로필 이미지가 성공적으로 업데이트됨")
             }
     )
     public ResponseEntity<?> updateProfile(
@@ -83,9 +79,7 @@ public class MemberController {
     @Operation(
             summary = "Member의 bio를 변경합니다",
             responses = {
-                    @ApiResponse(responseCode = "201", content = @Content),
-                    @ApiResponse(responseCode = "400", content = @Content),
-                    @ApiResponse(responseCode = "401", content = @Content)
+                    @ApiResponse(responseCode = "201", content = @Content)
             }
     )
     public ResponseEntity<?> updateBio(
