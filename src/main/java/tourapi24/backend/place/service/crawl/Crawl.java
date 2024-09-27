@@ -133,6 +133,8 @@ public class Crawl {
                 .title(item.getTitle())
                 .tel(kakaoPlaceResponse.getBasicInfo().getPhonenum())
                 .busanGu(BusanGu.getBusanGuByGuCode(Integer.parseInt(item.getSigungucode())))
+                .x(Double.parseDouble(item.getMapx()))
+                .y(Double.parseDouble(item.getMapy()))
                 .address(address);
 
         Place place;

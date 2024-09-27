@@ -45,6 +45,12 @@ public class Place {
     @Enumerated(EnumType.STRING)
     private BusanGu busanGu;
 
+    @NotNull
+    private Double x;
+
+    @NotNull
+    private Double y;
+
     @ElementCollection
     @CollectionTable(name = "place_images", joinColumns = @JoinColumn(name = "place_id"))
     @Column(name = "image")
