@@ -67,9 +67,16 @@ public class TravelLog {
     private String content;
 
     @Builder.Default
+    private Long viewCount = 0L;
+
+    @Builder.Default
     private Long likeCount = 0L;
 
     public void updateLikeCount(Long likeCount) {
         this.likeCount = likeCount;
+    }
+
+    public void increaseViewCount() {
+        this.viewCount++;
     }
 }

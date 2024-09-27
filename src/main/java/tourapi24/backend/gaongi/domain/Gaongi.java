@@ -32,9 +32,15 @@ public class Gaongi {
 
     public void increaseExp() {
         this.exp++;
+        calcLevel();
     }
 
-    public void calcLevel() {
+    public void increaseExp(int exp) {
+        this.exp += exp;
+        calcLevel();
+    }
+
+    private void calcLevel() {
         if ((this.exp >= 400) && (this.exp < 800)) {
             if (this.level != 2) {
                 this.level = 2;

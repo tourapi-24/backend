@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tourapi24.backend.annotation.CurrentUserInfo;
+import tourapi24.backend.gaongi.domain.Gaongi;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.repository.MemberRepository;
 import tourapi24.backend.place.domain.Place;
@@ -46,8 +47,13 @@ public class TravelLogService {
                 .build();
     }
 
+    @Transactional
     public TravelLogResponse getTravelLog(Long travelLogId) {
         TravelLog travelLog = travelLogRepository.findById(travelLogId).orElseThrow();
+        travelLog.increaseViewCount();
+
+        increaseExpByViewCount(travelLog);
+
         return convertToTravelLogResponse(travelLog);
     }
 
@@ -94,5 +100,25 @@ public class TravelLogService {
                 .media(travelLog.getMedia())
                 .content(travelLog.getContent())
                 .build();
+    }
+
+    private void increaseExpByViewCount(TravelLog travelLog) {
+        int addExp = 0;
+
+        if (travelLog.getViewCount() > 100) {
+            addExp = 5;
+        } else if (travelLog.getViewCount() > 200) {
+            addExp = 10;
+        } else if (travelLog.getViewCount() > 300) {
+            addExp = 15;
+        } else if (travelLog.getViewCount() > 500) {
+            addExp = 20;
+        } else if (travelLog.getViewCount() > 1000) {
+            addExp = 25;
+        }
+
+        Member member = travelLog.getMember();
+        Gaongi gaongi = member.getGaongi();
+        gaongi.increaseExp(addExp);
     }
 }

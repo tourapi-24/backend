@@ -26,7 +26,6 @@ public class GaongiService {
     public GaongiResponse increaseExp(Long memberId) {
         Gaongi gaongi = gaongiRepository.findByMemberId(memberId);
         gaongi.increaseExp();
-        gaongi.calcLevel();
         return GaongiResponse.builder()
                 .id(gaongi.getId())
                 .level(gaongi.getLevel())
