@@ -49,6 +49,8 @@ public class PlaceService {
                         .contentType(place.getContentType())
                         .imageUrl(place.getImages().stream().findFirst().orElse(null))
                         .congestionLevel(calculateCongestionLevel(getCurrentCongestion(place, currentHour)))
+                        .x(place.getX())
+                        .y(place.getY())
                         .build())
                 .collect(Collectors.toList());
 
@@ -134,7 +136,7 @@ public class PlaceService {
             if (response == null || response.getDocuments().isEmpty()) {
                 return BusanGu.getRandomBusanGu();
             }
-            
+
             return BusanGu.getBusanGuByGuName(
                     response
                             .getDocuments()

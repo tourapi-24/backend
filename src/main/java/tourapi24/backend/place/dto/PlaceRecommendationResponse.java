@@ -33,5 +33,11 @@ public class PlaceRecommendationResponse {
 
         @JsonProperty("congestion_level")
         private Integer congestionLevel;
+
+        @JsonProperty("x")
+        private Double x;
+
+        @JsonProperty("y")
+        private Double y;
     }
 }
