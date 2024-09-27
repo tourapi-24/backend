@@ -105,16 +105,16 @@ public class TravelLogService {
     private void increaseExpByViewCount(TravelLog travelLog) {
         int addExp = 0;
 
-        if (travelLog.getViewCount() > 100) {
-            addExp = 5;
-        } else if (travelLog.getViewCount() > 200) {
-            addExp = 10;
+        if (travelLog.getViewCount() > 1000) {
+            addExp = 40;
+        } else if (travelLog.getViewCount() > 500) {
+            addExp = 25;
         } else if (travelLog.getViewCount() > 300) {
             addExp = 15;
-        } else if (travelLog.getViewCount() > 500) {
-            addExp = 20;
-        } else if (travelLog.getViewCount() > 1000) {
-            addExp = 25;
+        } else if (travelLog.getViewCount() > 200) {
+            addExp = 10;
+        } else if (travelLog.getViewCount() > 100) {
+            addExp = 5;
         }
 
         Member member = travelLog.getMember();
