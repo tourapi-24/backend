@@ -3,6 +3,7 @@ package tourapi24.backend.relationship.memberliketravellog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tourapi24.backend.gaongi.domain.Gaongi;
 import tourapi24.backend.member.domain.Member;
 import tourapi24.backend.member.repository.MemberRepository;
 import tourapi24.backend.travellog.domain.TravelLog;
@@ -38,6 +39,9 @@ public class MemberLikeTravelLogService {
         memberLikeTravelLogRepository.save(memberLikeTravelLog);
 
         travelLog.updateLikeCount(memberLikeTravelLogRepository.countByTravelLog(travelLog));
+
+        increaseExpByLikeCount(travelLog);
+
         travelLogRepository.save(travelLog);
     }
 
@@ -62,4 +66,24 @@ public class MemberLikeTravelLogService {
                 .toList();
     }
 
+    private void increaseExpByLikeCount(TravelLog travelLog) {
+        int addExp = 0;
+        long likeCount = travelLog.getLikeCount();
+
+        if (likeCount > 80) {
+            addExp = 40;
+        } else if (likeCount > 50) {
+            addExp = 25;
+        } else if (likeCount > 30) {
+            addExp = 15;
+        } else if (likeCount > 10) {
+            addExp = 10;
+        } else if (likeCount > 5) {
+            addExp = 5;
+        }
+
+        Member member = travelLog.getMember();
+        Gaongi gaongi = member.getGaongi();
+        gaongi.increaseExp(addExp);
+    }
 }
