@@ -39,6 +39,7 @@ out/
 ### H2 Database ###
 h2.mv.db
 h2.mv.db.bak
+h2.trace.db
 
 ### application.yml ###
 src/test/resources/application.yml
