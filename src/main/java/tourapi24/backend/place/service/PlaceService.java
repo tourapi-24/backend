@@ -1,7 +1,6 @@
 package tourapi24.backend.place.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,10 +11,13 @@ import tourapi24.backend.place.dto.PlaceDetailResponse;
 import tourapi24.backend.place.dto.PlaceRecommendationRequest;
 import tourapi24.backend.place.dto.PlaceRecommendationResponse;
 import tourapi24.backend.place.repository.PlaceRepository;
+import tourapi24.backend.travellog.domain.EmojiOpinion;
+import tourapi24.backend.travellog.domain.SentenceOpinion;
+import tourapi24.backend.travellog.repository.TravelLogRepository;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,9 +26,7 @@ import java.util.stream.Collectors;
 public class PlaceService {
 
     private final PlaceRepository placeRepository;
-
-    @Value("${key.kakao}")
-    private String kakaoKey;
+    private final TravelLogRepository travelLogRepository;
 
     public PlaceRecommendationResponse recommendPlaces(PlaceRecommendationRequest request, String contentType, int page, int limit) {
         int currentHour = getCurrentHour();
@@ -61,12 +61,34 @@ public class PlaceService {
     public PlaceDetailResponse getPlaceDetail(Long placeId) {
         Place place = placeRepository.findById(placeId).orElseThrow();
 
+        List<List<SentenceOpinion>> sentenceOpinionResults = travelLogRepository.findSentenceOpinionsByPlaceId(placeId);
+        List<Object[]> emojiOpinionCounts = travelLogRepository.countEmojiOpinionsByPlaceId(placeId);
+
+        Set<SentenceOpinion> sentenceOpinions = new HashSet<>();
+        Map<EmojiOpinion, Long> emojiOpinionMap = new EnumMap<>(EmojiOpinion.class);
+
+        for (List<SentenceOpinion> opinions : sentenceOpinionResults) {
+            sentenceOpinions.addAll(opinions);
+        }
+        for (Object[] result : emojiOpinionCounts) {
+            EmojiOpinion emojiOpinion = (EmojiOpinion) result[0];
+            Long count = (Long) result[1];
+            emojiOpinionMap.put(emojiOpinion, count);
+        }
+
         return PlaceDetailResponse.builder()
                 .title(place.getTitle())
                 .contentType(place.getContentType())
                 .imageUrls(place.getImages())
                 .congestionLevel(calculateCongestionLevel(getCurrentCongestion(place, getCurrentHour())))
                 .address(place.getAddress())
+                .sentenceOpinions(new ArrayList<>(sentenceOpinions))
+                .emojiOpinions(emojiOpinionMap.entrySet().stream()
+                        .map(entry -> PlaceDetailResponse.kEmojiOpinion.builder()
+                                .opinion(entry.getKey())
+                                .count(entry.getValue())
+                                .build())
+                        .collect(Collectors.toList()))
                 .build();
     }
 

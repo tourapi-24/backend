@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import tourapi24.backend.place.domain.GovContentType;
+import tourapi24.backend.travellog.domain.EmojiOpinion;
+import tourapi24.backend.travellog.domain.SentenceOpinion;
 
 import java.util.List;
 
@@ -26,5 +28,19 @@ public class PlaceDetailResponse {
     @JsonProperty("address")
     private String address;
 
-    //TODO 방문일기 관련 필드 추가하기
+    @JsonProperty("sentence_opinions")
+    private List<SentenceOpinion> sentenceOpinions;
+
+    @JsonProperty("emoji_opinions")
+    private List<kEmojiOpinion> emojiOpinions;
+
+    @Getter
+    @Builder
+    public static class kEmojiOpinion {
+        @JsonProperty("emoji")
+        private EmojiOpinion opinion;
+
+        @JsonProperty("count")
+        private Long count;
+    }
 }
