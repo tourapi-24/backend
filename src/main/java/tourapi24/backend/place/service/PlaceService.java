@@ -2,18 +2,15 @@ package tourapi24.backend.place.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-import tourapi24.backend.place.domain.BusanGu;
 import tourapi24.backend.place.domain.GovContentType;
 import tourapi24.backend.place.domain.Place;
 import tourapi24.backend.place.dto.PlaceDetailResponse;
+import tourapi24.backend.place.dto.PlaceRecommendationRequest;
 import tourapi24.backend.place.dto.PlaceRecommendationResponse;
-import tourapi24.backend.place.dto.external.kakao.KakaoCoordResponse;
 import tourapi24.backend.place.repository.PlaceRepository;
 
 import java.time.ZoneId;
@@ -26,22 +23,24 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class PlaceService {
 
-    private static final String KAKAO_COORD_URL = "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=%f&y=%f";
-
-    private final RestTemplate restTemplate;
     private final PlaceRepository placeRepository;
 
     @Value("${key.kakao}")
     private String kakaoKey;
 
-    public PlaceRecommendationResponse recommendPlaces(String contentType, double x, double y) {
+    public PlaceRecommendationResponse recommendPlaces(PlaceRecommendationRequest request, String contentType, int page, int limit) {
         int currentHour = getCurrentHour();
-        BusanGu busanGu = getBusanGuByLocation(x, y);
-        List<Place> places = placeRepository.findPlacesByBusanGuAndContentTypeOrderByCongestion(
-                busanGu,
-                GovContentType.valueOf(contentType),
-                currentHour
-        );
+        Pageable pageable = PageRequest.of(page, limit);
+        GovContentType govContentType = contentType == null ? null : GovContentType.valueOf(contentType);
+
+        List<Place> places = placeRepository.findNearbyPlacesByContentId(
+                request.getX(),
+                request.getY(),
+                request.getRadiusMeter(),
+                currentHour,
+                govContentType,
+                pageable
+        ).getContent();
 
         List<PlaceRecommendationResponse.Place> responsePlaces = places.stream()
                 .map(place -> PlaceRecommendationResponse.Place.builder()
@@ -55,7 +54,6 @@ public class PlaceService {
                 .collect(Collectors.toList());
 
         return PlaceRecommendationResponse.builder()
-                .gu(busanGu)
                 .places(responsePlaces)
                 .build();
     }
@@ -115,36 +113,6 @@ public class PlaceService {
             return 1; // 보통
         } else {
             return 2; // 혼잡
-        }
-    }
-
-    private BusanGu getBusanGuByLocation(double x, double y) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "KakaoAK " + kakaoKey);
-
-        String url = String.format(KAKAO_COORD_URL, x, y);
-
-        KakaoCoordResponse response;
-        try {
-            response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    new HttpEntity<>(headers),
-                    KakaoCoordResponse.class
-            ).getBody();
-
-            if (response == null || response.getDocuments().isEmpty()) {
-                return BusanGu.getRandomBusanGu();
-            }
-
-            return BusanGu.getBusanGuByGuName(
-                    response
-                            .getDocuments()
-                            .getFirst()
-                            .getRegion2depthName()
-            );
-        } catch (Exception e) {
-            return BusanGu.getRandomBusanGu();
         }
     }
 }

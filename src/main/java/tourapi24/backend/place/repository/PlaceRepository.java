@@ -1,21 +1,24 @@
 package tourapi24.backend.place.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import tourapi24.backend.place.domain.BusanGu;
 import tourapi24.backend.place.domain.GovContentType;
 import tourapi24.backend.place.domain.Place;
-
-import java.util.List;
 
 @Repository
 public interface PlaceRepository extends JpaRepository<Place, Long> {
 
     @Query(
             "select p from Place p " +
-                    "where p.isCongestion = true and p.busanGu = :busanGu and p.contentType = :contentType " +
+                    "where p.isCongestion = true  " +
+                    "and (:contentType is null or p.contentType = :contentType) " +
+                    "and (6371 * acos(cos(radians(:userY)) * " +
+                    "cos(radians(p.y)) * cos(radians(p.x) - radians(:userX)) + " +
+                    "sin(radians(:userY)) * sin(radians(p.y))) * 1000) < :radiusMeter " +
                     "order by case " +
                     "when :hour = 0 then p.congestion_00 " +
                     "when :hour = 1 then p.congestion_01 " +
@@ -41,11 +44,14 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
                     "when :hour = 21 then p.congestion_21 " +
                     "when :hour = 22 then p.congestion_22 " +
                     "when :hour = 23 then p.congestion_23 " +
-                    "end asc limit 20"
+                    "end asc"
     )
-    List<Place> findPlacesByBusanGuAndContentTypeOrderByCongestion(
-            @Param("busanGu") BusanGu busanGu,
+    Page<Place> findNearbyPlacesByContentId(
+            @Param("userX") double userX,
+            @Param("userY") double userY,
+            @Param("radiusMeter") int radiusMeter,
+            @Param("hour") int hour,
             @Param("contentType") GovContentType contentType,
-            @Param("hour") int hour
+            Pageable pageable
     );
 }

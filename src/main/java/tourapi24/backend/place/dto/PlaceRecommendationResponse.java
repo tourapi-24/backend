@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import tourapi24.backend.place.domain.BusanGu;
 import tourapi24.backend.place.domain.GovContentType;
 
 import java.util.List;
@@ -13,8 +12,7 @@ import java.util.List;
 @Getter
 @Builder
 public class PlaceRecommendationResponse {
-    @JsonProperty("gu")
-    private BusanGu gu;
+
     @JsonProperty
     private List<Place> places;
 

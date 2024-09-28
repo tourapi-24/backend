@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import tourapi24.backend.annotation.CurrentUser;
 import tourapi24.backend.annotation.CurrentUserInfo;
 import tourapi24.backend.place.dto.PlaceDetailResponse;
+import tourapi24.backend.place.dto.PlaceRecommendationRequest;
 import tourapi24.backend.place.dto.PlaceRecommendationResponse;
 import tourapi24.backend.place.service.PlaceService;
 import tourapi24.backend.relationship.memberlikeplace.MemberLikePlaceService;
@@ -28,7 +30,7 @@ public class PlaceController {
     private final PlaceService placeService;
     private final MemberLikePlaceService memberLikePlaceService;
 
-    @GetMapping("/recommendation")
+    @PostMapping("/recommendation")
     @Operation(
             summary = "혼잡도 기반으로 명소를 추천합니다",
             description = "congestion_level 0, 1, 2는 각각 여유, 보통, 혼잡을 나타냅니다",
@@ -43,14 +45,13 @@ public class PlaceController {
             }
     )
     public ResponseEntity<PlaceRecommendationResponse> recommendPlaces(
+            @RequestBody @Valid PlaceRecommendationRequest request,
             @Parameter(description = "관광지, 문화시설, 축제공연행사, 레포츠, 음식점")
-            @RequestParam String contentType,
-            @Parameter(description = "경도")
-            @RequestParam double x,
-            @Parameter(description = "위도")
-            @RequestParam double y
+            @RequestParam(required = false) String contentType,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int limit
     ) {
-        return ResponseEntity.ok(placeService.recommendPlaces(contentType, x, y));
+        return ResponseEntity.ok(placeService.recommendPlaces(request, contentType, page, limit));
     }
 
     @GetMapping("/detail/{id}")
