@@ -56,7 +56,7 @@ public class MemberService {
                         .toList())
                 .places(places.stream().map(p -> ProfileResponse.PlaceDto.builder()
                                 .placeTitle(p.getTitle())
-                                .placeImage(p.getImages().getFirst())
+                                .placeImage(p.getImages().getFirst() == null ? null : p.getImages().getFirst())
                                 .build())
                         .toList())
                 .build();
